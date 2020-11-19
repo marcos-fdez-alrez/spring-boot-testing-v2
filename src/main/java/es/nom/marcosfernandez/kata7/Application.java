@@ -9,13 +9,28 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * Main Application.
+ */
 @SpringBootApplication
 @EnableSwagger2
 public class Application {
-    public static void main(String[] args) {
+
+    /**
+     * Main entry point.
+     *
+     * @param args - main arguments
+     */
+    public static void main(final String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
+
+    /**
+     * api() Method.
+     *
+     * @return - Docket
+     */
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)

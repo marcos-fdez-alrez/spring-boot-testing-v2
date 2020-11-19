@@ -5,14 +5,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import java.util.stream.Stream;
+
+import static org.assertj.core.api.BDDAssertions.then;
 
 @SpringBootTest
-class ApplicationTests {
-
-    private static final Stream<String> conversors = Stream.of("https://api.frankfurter.app/latest",
-            "https://api.ratesapi.io/api/latest",
-            "https://api.exchangeratesapi.io/latest");
+class ServiceTests {
 
     private static final String DEST_CURRENCY = "USD";
     private static final Double BEST_RATE = 1.1868;
@@ -22,6 +19,7 @@ class ApplicationTests {
 
     @Test
     void when_USD_obtain_best_rate() {
-        Assertions.assertEquals(BEST_RATE,bestExchangeFinder.obtainBestRate(DEST_CURRENCY));
+        //Assertions.assertEquals(BEST_RATE,bestExchangeFinder.obtainBestRate(DEST_CURRENCY));
+        then(bestExchangeFinder.obtainBestRate(DEST_CURRENCY)).isEqualTo(BEST_RATE);
     }
 }

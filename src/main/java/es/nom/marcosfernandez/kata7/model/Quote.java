@@ -7,14 +7,19 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.Map;
 
-
+/**
+ * Quote model class.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Quote {
 
+    /** base property. */
     private String base;
-    private Map<String,Double> rates;
+    /** Map in which the conversion rates are hold. */
+    private Map<String, Double> rates;
+    /** Rates date. */
     private LocalDate date;
 
 }
