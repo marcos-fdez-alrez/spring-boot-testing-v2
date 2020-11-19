@@ -2,6 +2,7 @@ package es.nom.marcosfernandez.kata7.services.impl;
 
 import es.nom.marcosfernandez.kata7.model.Quote;
 import es.nom.marcosfernandez.kata7.services.BestExchangeFinder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -10,18 +11,18 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Executor;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.ExecutionException;
 
 
 /**
  * Service Implementation Class.
  */
+@Slf4j
 @Service
 public class BestExchangeFinderImpl implements BestExchangeFinder {
 
@@ -42,7 +43,8 @@ public class BestExchangeFinderImpl implements BestExchangeFinder {
      */
     public Double obtainBestRate(final String currency) {
         return CONVERSORS.parallelStream()
-                .mapToDouble(conversor -> obtainAsyncRate(currency, conversor))
+                .map(conversor -> obtainAsyncRate(currency, conversor))
+                .mapToDouble(CompletableFuture::join)
                 .min().getAsDouble();
     }
 
@@ -54,16 +56,23 @@ public class BestExchangeFinderImpl implements BestExchangeFinder {
      * @return Double - returns found rate
      *
      */
-    private double obtainAsyncRate(final String currency,
+    private CompletableFuture<Double> obtainAsyncRate(final String currency,
                                    final String conversor) {
-      try {
+//      try {
         return CompletableFuture.supplyAsync(
             () -> obtainRateFromConversorAPI(currency, conversor), executor)
+                .orTimeout(TIMEOUT, TimeUnit.SECONDS)
+                .handle((response, ex) -> {
+                    if (!Objects.isNull(ex)) {
+                        return 0D;
+                    }
+                    return response;
+                });
+                //.get(TIMEOUT, TimeUnit.SECONDS);
             //.completeOnTimeout(0D, TIMEOUT, TimeUnit.SECONDS)
-            .get(TIMEOUT, TimeUnit.SECONDS);
-      } catch (InterruptedException | ExecutionException | TimeoutException e) {
-          return 0D;
-      }
+//  } catch (InterruptedException | ExecutionException | TimeoutException e) {
+//      return 0D;
+//  }
     }
 
     /**
