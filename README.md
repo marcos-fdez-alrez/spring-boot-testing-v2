@@ -1,4 +1,6 @@
-# spring-boot-testing-v2
+# spring-boot-testing-v2 
+
+![Java CI with Maven](https://github.com/marcos-fdez-alrez/spring-boot-testing-v2/workflows/Java%20CI%20with%20Maven/badge.svg)
 
 ```gherkin
 Feature: EUR-USD Conversor using the best Rate 
